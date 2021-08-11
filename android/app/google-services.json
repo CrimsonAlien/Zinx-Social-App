@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "488510305454",
+    "firebase_url": "https://zinx-a2357-default-rtdb.firebaseio.com",
+    "project_id": "zinx-a2357",
+    "storage_bucket": "zinx-a2357.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:488510305454:android:c9a92e3e66c9514c14e93f",
+        "android_client_info": {
+          "package_name": "com.example.zinx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "488510305454-haf5mkv7ua9aer207u2ppcuq7lt6b635.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.zinx",
+            "certificate_hash": "b725bb487125db1f05911a8d737d459090b74335"
+          }
+        },
+        {
+          "client_id": "488510305454-3s83dc3009jrdrm4nsshj5erhh2tvbui.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfIWu-_wl-_ZdHYWtUodpoPS93fsMn14c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "488510305454-3s83dc3009jrdrm4nsshj5erhh2tvbui.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
