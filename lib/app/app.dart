@@ -3,10 +3,10 @@ import 'package:zinx/ui/views/Loading_screen.dart';
 import 'package:zinx/ui/views/create_account_view.dart';
 import 'package:zinx/ui/views/create_profile.dart';
 import 'package:zinx/ui/views/login_view.dart';
+import 'package:zinx/ui/views/main_screens/user_main_screen.dart';
 import 'package:zinx/ui/views/set_password.dart';
 import 'package:zinx/ui/views/signup_page.dart';
 import 'package:zinx/ui/views/startup_view.dart';
-import 'package:zinx/ui/views/user/user_main_screen.dart';
 import 'package:zinx/ui/views/verify_email.dart';
 
 @StackedApp(

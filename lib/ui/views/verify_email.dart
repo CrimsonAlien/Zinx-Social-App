@@ -75,7 +75,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
                                 child: InkWell(
                                   onTap:() {
 
-model.checkIsVerified();
+
                                   },
                                   child: Container(
                                     height: 55,

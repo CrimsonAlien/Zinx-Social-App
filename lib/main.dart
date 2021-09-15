@@ -2,9 +2,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:zinx/app/app.router.dart';
+import 'package:zinx/enums/connectivity_status.dart';
+import 'package:zinx/services/connectivity_service.dart';
 import 'package:zinx/ui/shared/app_colors.dart';
 import 'locator.dart';
 
@@ -21,15 +24,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+    return StreamProvider<ConnectivityStatus>(
+      initialData: ConnectivityStatus.offline,
+      create: (context) => ConnectivityService().connectionStatusController.stream,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
    textTheme: TextTheme(subtitle1: TextStyle(color: AppColor.tintedWhite)),
-        primarySwatch: Colors.blue,
-      ),
+          primarySwatch: Colors.blue,
+        ),
 navigatorKey: StackedService.navigatorKey,
-      onGenerateRoute: StackedRouter().onGenerateRoute,
+        onGenerateRoute: StackedRouter().onGenerateRoute,
+      ),
     );
   }
 }

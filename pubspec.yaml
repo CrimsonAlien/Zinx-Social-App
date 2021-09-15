@@ -41,6 +41,9 @@ dependencies:
   email_validator:
   email_auth: ^0.0.1+4
   password_text_field: ^0.0.2
+  cloud_firestore: ^2.5.0
+  connectivity_plus: ^1.1.0
+
 
 
   # provider architecture

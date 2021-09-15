@@ -15,15 +15,15 @@ class CreateAccountModel extends BaseModel{
 
 
 
-Future signUpA({required String email,required String password}) async{
+Future signUpA({required String email,required String password,required photoUrl,required username,required displayName,required bio }) async{
 
-  var result = await _authenticationService.signupWithEmail(email: email, password: password);
+  var result = await _authenticationService.signupWithEmail(email: email, password: password, photoUrl: photoUrl, username: username, displayName: displayName, bio: bio);
 
   if(result is bool){
 
     if(result){
 
-     _authenticationService.sendVerificationLink().then((value) => _navigationService.navigateTo(Routes.verifyEmail));
+     _authenticationService.sendVerificationLink().then((value) => _navigationService.navigateTo(Routes.userMainScreen));
 
     }
 else{
@@ -44,20 +44,18 @@ else{
 
 }
 
-Future checkIsVerified()async {
-  var outcome = await _authenticationService.checkEmailVerified();
+void checkEmail({required String email}) async{
 
+  String result= await _authenticationService.checkEmail(email);
 
-  if (outcome is bool) {
-
-      _navigationService.navigateTo(Routes.userMainScreen);
-
+  if(result.length==1){
+    print("yes");
   }
-  else {
-    _snackbarService.showSnackbar(message: outcome);
+  else{
+    _snackbarService.showSnackbar(message:result);
   }
+
 }
-
 
 
 }

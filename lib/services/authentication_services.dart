@@ -3,11 +3,19 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:zinx/models/user.dart';
+import 'package:zinx/services/firestore_service.dart';
+
+import '../locator.dart';
 
 class AuthenticationService{
   final FirebaseAuth _firebaseAuth=FirebaseAuth.instance;
+  final FirestoreService _firestoreService=locator<FirestoreService>();
 
   Future loginWithEmail({
     required String email,
@@ -23,11 +31,23 @@ return e;
   }
   }
 
-  Future signupWithEmail({required String email,required String password}) async{
+  Future signupWithEmail({required String email,required String password,required String username,required photoUrl,required displayName,required bio}) async{
     try{
       var userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password);
+
+      await _firestoreService.CreateUser(FireUser(
+        id: userCredential.user!.uid,
+        email: email,
+        username:username,
+        photoUrl:photoUrl,
+        displayName:displayName,
+        bio:bio,
+
+      ));
+
+
       return userCredential.user !=null ;
 
     } on FirebaseAuthException catch (e) {
@@ -44,8 +64,7 @@ return e;
     return user != null;
 
   }
-
-/*Future checkEmail(String email) async {
+  Future checkEmail(String email) async {
 
 
 
@@ -55,11 +74,11 @@ try{
 
   return emailChecker;
 }
-catch(e){
-  return e;
+on FirebaseAuthException catch(e){
+  return e.message;
 }
 
-  } */
+  }
 
 
  Future sendVerificationLink() async{
@@ -80,34 +99,27 @@ return user != null;
 }
 
 
-Future checkEmailVerified() async{
+Future<bool>checkDisplayName({required String displayName}) async{
 
 
-try{
-  var user = _firebaseAuth.currentUser;
-  if(user !=null){
-    await user.reload();
 
-    try{
+ var result= await _firestoreService.checkUserName(displayName);
 
-      if(user.emailVerified){
-        print("verified");
-        return user.emailVerified;
-      }
-    }on FirebaseAuthException catch(e){
-      return e.message;
+ return result;
 
-    }
 
-  }
-}on FirebaseAuthException catch(e){
-  return e.message;
-}
 
 
 
   }
 
+  Future<bool>checkEmailExist({required String email}) async{
+
+    var result= await _firestoreService.checkemail(email);
+
+    return result;
+
+  }
 
 
 }

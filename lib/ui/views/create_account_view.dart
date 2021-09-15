@@ -25,8 +25,6 @@ class _CreateAccountState extends State<CreateAccount> {
   final formKey = GlobalKey<FormState>();
   final  _emailController = TextEditingController();
   final  _passwordController = TextEditingController();
-  final AuthenticationService _authenticationService=locator<AuthenticationService>();
-
 
 
   @override
@@ -82,13 +80,10 @@ class _CreateAccountState extends State<CreateAccount> {
 
                             SizedBox(height: height/5,),
                             Center(
-                                child:EmailFieldWidget(
 
-                                  controller: _emailController,
-                                )
                             ),
                             SizedBox(height: 15.0,),
-                            Center(
+                          Center(
                               child:PasswordTextFormField(
                                 autovalidate: true,
                               controller: _passwordController,
@@ -124,7 +119,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
                                   if (form.validate()) {
 
-model.signUpA(email: _emailController.text, password: _passwordController.text);
+model.signUpA(email: _emailController.text, password: _passwordController.text , photoUrl: 'sed', username: 'jude', displayName: 'crimson', bio: 'God is good');
                                   }
 
 

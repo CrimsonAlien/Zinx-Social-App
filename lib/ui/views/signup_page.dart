@@ -1,30 +1,39 @@
 
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:stacked/stacked.dart';
-import 'package:stacked_services/stacked_services.dart';
-import 'package:zinx/app/app.router.dart';
+
 import 'package:zinx/ui/shared/app_colors.dart';
+
+import 'package:zinx/ui/widgets/email_field_widget.dart';
+import 'package:zinx/ui/widgets/textformfield.dart';
 import 'package:zinx/viewmodels/signup_view_model.dart';
-import 'package:zinx/viewmodels/startup_view_model.dart';
+
 
 import '../../locator.dart';
 
-class SignupPage extends StatelessWidget {
+class SignupPage extends StatefulWidget {
+  @override
+  _SignupPageState createState() => _SignupPageState();
+}
 
+class _SignupPageState extends State<SignupPage> {
+  final formKey = GlobalKey<FormState>();
+  final  _userName = TextEditingController();
+  final  _email = TextEditingController();
+  final bool _enabled=false;
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<StartupPageViewModel>.reactive(
+    return ViewModelBuilder<SignupViewModel>.reactive(
       builder: (context,model,child){
         final size = MediaQuery.of(context).size;
         final height = MediaQuery.of(context).size.height;
-        final _navigationService = locator<NavigationService>();
-        final textContoller= new TextEditingController();
-        final scaffoldkey= new GlobalKey<ScaffoldState>();
-        final formkey= new GlobalKey<FormState>();
-        
+
+
 
         return ResponsiveBuilder(
           builder: (context, sizingInformation) {
@@ -43,7 +52,6 @@ class SignupPage extends StatelessWidget {
 
             return SafeArea(
               child: Scaffold(
-                key: scaffoldkey,
 
                   backgroundColor: AppColor.backgroundBlack,
 
@@ -55,45 +63,75 @@ class SignupPage extends StatelessWidget {
 
                       height: size.height,
                       child: Form(
-               key: formkey,
+                        key:formKey,
                         child: Column(
 
 
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text("Hello, \nTell Us your Name",style: TextStyle(fontFamily: 'Poppins',fontSize: 37.0,fontWeight:FontWeight.bold ,height: 1.1,color: AppColor.textWhite) ,),
-
-SizedBox(height: height/5,),
-                Center(
-                    child:new TextFormField(
-controller: textContoller,
-
-                         decoration: new InputDecoration(
+                            Center(
 
 
-                    enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
+                                child: Text("Create your account",style: TextStyle(fontFamily: 'Poppins',fontSize: 37.0,fontWeight:FontWeight.bold ,height: 1.1,color: AppColor.textWhite) ,)),
 
-                          color: AppColor.textWhite,
-                        )
-                    ),
-                           hintText: "Name",
-                           hintStyle: TextStyle(color: AppColor.tintedWhite),
-                         )
 
-                    )
-                ),
-SizedBox(height: height/6,),
+                            SizedBox(height: height/5,),
+
+                            SizedBox(height: 15.0,),
+                            Center(
+
+                                child: GeneralAsyncTextFormField(
+
+
+                                  controller: _userName,
+                                  validationDebounce: Duration(milliseconds: 500),
+                                  validator:(_value){
+
+                                 return   model.checker(displayName: _userName.text);
+                                  },
+
+                                  hintText: 'Username',
+
+
+                                ),
+
+                            ),
+                         SizedBox(height: 35,),
+                            Center(
+
+                              child: AsyncTextFormField(
+
+
+
+                                controller: _email,
+                                validationDebounce: Duration(milliseconds: 500),
+                                validator:(value){
+
+
+                                    return model.emailChecker(email: _email.text);
+
+
+                                },
+
+                                hintText: 'email',
+
+
+                              ),
+
+                            ),
+
+                            SizedBox(height: height/6,),
                             Padding(
                               padding: const EdgeInsets.only(left:50,right: 50 ),
                               child: InkWell(
-                                onTap: (){
+                                onTap:() {
 
 
-                                  _navigationService.navigateTo(
+                                  final form = formKey.currentState!;
 
-                                    Routes.createAccount,
-                                  );
+                                  if (form.validate()) {
+
+                                  }
 
 
                                 },
@@ -132,7 +170,6 @@ SizedBox(height: height/6,),
                   )
               ),
 
-
             );
           },
 
@@ -140,8 +177,14 @@ SizedBox(height: height/6,),
         );
       }
       ,
-      viewModelBuilder: () =>StartupPageViewModel(),
+
+      viewModelBuilder: () =>SignupViewModel(),
     );
+
+
   }
 
+
 }
+
+
