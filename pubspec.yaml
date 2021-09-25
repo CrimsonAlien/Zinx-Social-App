@@ -43,7 +43,8 @@ dependencies:
   password_text_field: ^0.0.2
   cloud_firestore: ^2.5.0
   connectivity_plus: ^1.1.0
-
+  reactive_forms: ^10.6.0
+  flutter_screenutil: ^5.0.0+2
 
 
   # provider architecture

@@ -2,6 +2,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:stacked_services/stacked_services.dart';
@@ -27,15 +28,19 @@ class MyApp extends StatelessWidget {
     return StreamProvider<ConnectivityStatus>(
       initialData: ConnectivityStatus.offline,
       create: (context) => ConnectivityService().connectionStatusController.stream,
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
+      child: ScreenUtilInit(
+
+        builder: () =>  MaterialApp(
+          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
    textTheme: TextTheme(subtitle1: TextStyle(color: AppColor.tintedWhite)),
-          primarySwatch: Colors.blue,
-        ),
+            primarySwatch: Colors.blue,
+          ),
 navigatorKey: StackedService.navigatorKey,
-        onGenerateRoute: StackedRouter().onGenerateRoute,
+          onGenerateRoute: StackedRouter().onGenerateRoute,
+        ),
+ designSize: const Size(360, 640),
       ),
     );
   }

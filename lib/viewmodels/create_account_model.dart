@@ -23,7 +23,6 @@ Future signUpA({required String email,required String password,required photoUrl
 
     if(result){
 
-     _authenticationService.sendVerificationLink().then((value) => _navigationService.navigateTo(Routes.userMainScreen));
 
     }
 else{
@@ -35,11 +34,6 @@ else{
 
   _snackbarService.showSnackbar(message:result);
   }
-
-
-
-
-
 
 
 }

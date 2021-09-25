@@ -81,23 +81,6 @@ on FirebaseAuthException catch(e){
   }
 
 
- Future sendVerificationLink() async{
-
-
-  var user = _firebaseAuth.currentUser;
-  if(user != null && !user.emailVerified) {
-
-   try{
-     await user.sendEmailVerification();
-     print("link sent");
-
-   }on FirebaseAuthException catch(e){
-     return e.message;
-   }
-  }
-return user != null;
-}
-
 
 Future<bool>checkDisplayName({required String displayName}) async{
 

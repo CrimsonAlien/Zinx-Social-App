@@ -12,7 +12,7 @@ class GeneralAsyncTextFormField extends StatefulWidget {
   final String valueIsEmptyMessage;
   final String valueIsInvalidMessage;
   final String invalidEmail;
-
+final ValueChanged<String>? realtime;
 
   const GeneralAsyncTextFormField({Key? key,
     required this.validator,
@@ -22,7 +22,7 @@ class GeneralAsyncTextFormField extends StatefulWidget {
     this.valueIsEmptyMessage = ' ',
     this.valueIsInvalidMessage = 'Must be 30 characters or fewer',
     this.invalidEmail='Enter a valid email address',
-    this.hintText = '',
+    this.hintText = '', this.realtime,
   }) : super(key: key);
 
   @override
@@ -38,9 +38,11 @@ class _GeneralAsyncTextFormFieldState extends State<GeneralAsyncTextFormField> {
 
 
 
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
         if (isValidating) {
@@ -56,6 +58,7 @@ class _GeneralAsyncTextFormFieldState extends State<GeneralAsyncTextFormField> {
         }
         return null;
       },
+
       onChanged: (text) async {
         isDirty = true;
         if (text.isEmpty ) {
@@ -113,7 +116,7 @@ class _GeneralAsyncTextFormFieldState extends State<GeneralAsyncTextFormField> {
     });
     final isValid = await widget.validator(text);
     isValidating = false;
-    return isValid;
+    return isValid !=null;
   }
 
   Widget _getSuffixIcon() {
