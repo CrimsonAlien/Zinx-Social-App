@@ -151,14 +151,33 @@ class _SignupPageState extends State<SignupPage> {
                                   _isEnabled=false;
                                 });
                                 return 'Please check internet connection';
-
                               }else{
-                                setState(() {
-                                  _isEnabled=true;
+                                Future.delayed(Duration.zero);
+
+                                return model.checkEmail(email: _email.text).then((onValue) {
+                                  if(onValue!=null && onValue.isNotEmpty){
+                                    setState(() {
+                                      _isEnabled=false;
+                                    });
+                                    return "email is already in use";
+                                  }else{
+                                    setState(() {
+                                      _isEnabled=true;
+                                    });
+                                  }
+                                }).catchError((onError) {
+                                  print(onError);
                                 });
 
+
+
+
+
+
+                                }
                               }
-                    }
+
+
 
 
 
@@ -237,7 +256,9 @@ return TextButton(
   return  Opacity(
     opacity: 0.2,
     child: TextButton(
-       onPressed:null,
+       onPressed:(){
+
+       },
        style: ButtonStyle(
            backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
            foregroundColor: MaterialStateProperty.all(Colors.white),

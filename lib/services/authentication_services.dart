@@ -64,35 +64,39 @@ return e;
     return user != null;
 
   }
-  Future checkEmail(String email) async {
 
 
+  Future<bool> checkIfEmailInUse(String emailAddress) async {
+    try {
+      // Fetch sign-in methods for the email address
+      final list = await FirebaseAuth.instance.fetchSignInMethodsForEmail(emailAddress);
 
-try{
-  var emailChecker = await _firebaseAuth.fetchSignInMethodsForEmail(email);
-
-
-  return emailChecker;
-}
-on FirebaseAuthException catch(e){
-  return e.message;
-}
-
+      // In case list is not empty
+      if (list.isNotEmpty) {
+        // Return true because there is an existing
+        // user using the email address
+        return true;
+      } else {
+        // Return false because email adress is not in use
+        return false;
+      }
+    } catch (e) {
+      // Handle error
+      // ...
+      return false;
+    }
   }
 
 
 
-Future<bool>checkDisplayName({required String displayName}) async{
-
-
-
- var result= await _firestoreService.checkUserName(displayName);
-
- return result;
 
 
 
 
+  Future<String> checkDisplayName({required String displayName}) async{
+
+   var result= await _firestoreService.checkUserName(displayName);
+   return result;
 
   }
 

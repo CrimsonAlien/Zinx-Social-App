@@ -38,18 +38,6 @@ else{
 
 }
 
-void checkEmail({required String email}) async{
-
-  String result= await _authenticationService.checkEmail(email);
-
-  if(result.length==1){
-    print("yes");
-  }
-  else{
-    _snackbarService.showSnackbar(message:result);
-  }
-
-}
 
 
 }

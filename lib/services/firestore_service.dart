@@ -15,7 +15,7 @@ await _usersCollectionReference.doc(user.id).set(user.toJson());
     return e.message;
   }
 }
-Future<bool> checkUserName(String displayName)async{
+Future checkUserName(String displayName)async{
 //check if displayName exist in firestore
   var result=await _usersCollectionReference.where('displayName',isEqualTo:displayName).limit(1).get();
   final List<DocumentSnapshot> documents = result.docs;
