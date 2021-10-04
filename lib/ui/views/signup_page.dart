@@ -9,6 +9,7 @@ import 'package:reactive_forms/reactive_forms.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:stacked/stacked.dart';
 import 'package:zinx/enums/connectivity_status.dart';
+import 'package:zinx/enums/view_state.dart';
 
 import 'package:zinx/ui/shared/app_colors.dart';
 import 'package:zinx/ui/widgets/deactivatable_button.dart';
@@ -50,180 +51,180 @@ class _SignupPageState extends State<SignupPage> {
         return new Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: AppColor.backgroundBlack,
-              body: SafeArea(
-                  maintainBottomViewPadding: false,
-                  child: SingleChildScrollView(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    reverse: true,
-                    child:  Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 52.h,
-                        ),
-                        Text(
-                          "Create Account",
-                          style: TextStyle(
-                            fontSize: 37.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColor.textWhite,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 4.h,
-                        ),
+          body: SafeArea(
+              maintainBottomViewPadding: false,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                reverse: true,
+                child:  Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 52.h,
+                    ),
+                    Text(
+                      "Create Account",
+                      style: TextStyle(
+                        fontSize: 37.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppColor.textWhite,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 4.h,
+                    ),
 
-                        SizedBox(
-                          height: 24.h,
-                        ),
-                        AsyncTextFormField(
+                    SizedBox(
+                      height: 24.h,
+                    ),
+                    AsyncTextFormField(
 
-                            key: _usernameFormKey,
-                            maxLength: 40,
-                            controller: _userName,
-                            validationDebounce: Duration(milliseconds: 500),
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(color: AppColor.textWhite),
-                              hintText: 'Name',
-
-                            ),
-                            validator: (String? value) async {
-
-                              if(value==null||value.isEmpty){
-                                setState(() {
-                                  _isValid=false;
-                                });
-                                return null;
-                              }
-                              if(value.trim().length>40){
-                                setState(() {
-                                  _isValid=false;
-                                });
-                                return 'must have 50 characters or less';
-                              }
-                              else{
-                                setState(() {
-                                  _isValid=true;
-                                });
-                              }
-
-
-
-                            }
-
-
+                        key: _usernameFormKey,
+                        maxLength: 90,
+                        controller: _userName,
+                        validationDebounce: Duration(milliseconds: 500),
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(color: AppColor.textWhite),
+                          hintText: 'Name',
 
                         ),
-                        SizedBox(
-                          height: 16.h,
+                        validator: (String? value) async {
+
+                          if(value==null||value.isEmpty){
+
+                            model.setState(ViewState.idle);
+                            _isEnabled=false;
+                            return null;
+                          }
+                          if(value.trim().length>4){
+                            model.setState(ViewState.idle);
+                            _isEnabled=false;
+                            return 'must have 50 characters or less';
+                          }
+                          else{
+
+                            model.setState(ViewState.busy);
+                            _isEnabled=true;
+
+                          }
+
+
+
+                        }
+
+
+
+                    ),
+                    SizedBox(
+                      height: 16.h,
+                    ),
+
+                    AsyncTextFormField(
+
+                        key: _emailFormKey,
+                        controller: _email,
+                        validationDebounce: Duration(milliseconds: 500),
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(color: AppColor.textWhite),
+                          hintText: 'Email',
+
                         ),
+                        validator: (String? value) async {
+
+                          if(value==null||value.isEmpty){
+                            model.setState(ViewState.idle);
+                          _isValid=false;
 
 
-                        AsyncTextFormField(
+                          }
+                          if(!EmailValidator.validate(_email.text)){
 
-                            key: _emailFormKey,
-                            controller: _email,
-                            validationDebounce: Duration(milliseconds: 500),
-                            decoration: InputDecoration(
-                              hintStyle: TextStyle(color: AppColor.textWhite),
-                              hintText: 'Email',
+                            model.setState(ViewState.idle);
+                            _isValid=false;
+                            return 'Enter a valid email';
+                          }
+                          if(connectionStatus==ConnectivityStatus.offline){
+                            model.setState(ViewState.idle);
+                            _isValid=false;
+                            return 'Please check internet connection';
+                          }else{
+                            Future.delayed(Duration.zero);
 
-                            ),
-                            validator: (String? value) async {
-
-                              if(value==null||value.isEmpty){
-                                setState(() {
-                                  _isEnabled=false;
-                                });
-                                return null;
-                              }
-                              if(!EmailValidator.validate(_email.text)){
-
-                                Future.delayed(Duration.zero);
-                                setState(() {
-                                  _isEnabled=false;
-                                });
-                                return 'Enter a valid email';
-                              }
-                              if(connectionStatus==ConnectivityStatus.offline){
-                                Future.delayed(Duration.zero);
-                                setState(() {
-                                  _isEnabled=false;
-                                });
-                                return 'Please check internet connection';
+                            return model.checkEmail(email: _email.text).then((onValue) {
+                              if(onValue!=null && onValue.isNotEmpty){
+                                model.setState(ViewState.idle);
+                                _isValid=false;
+                                return "email is already in use";
                               }else{
-                                Future.delayed(Duration.zero);
-
-                                return model.checkEmail(email: _email.text).then((onValue) {
-                                  if(onValue!=null && onValue.isNotEmpty){
-                                    setState(() {
-                                      _isEnabled=false;
-                                    });
-                                    return "email is already in use";
-                                  }else{
-                                    setState(() {
-                                      _isEnabled=true;
-                                    });
-                                  }
-                                }).catchError((onError) {
-                                  print(onError);
-                                });
-
-
-
-
-
-
-                                }
+                                model.setState(ViewState.busy);
+                                _isValid=true;
                               }
+                            }).catchError((onError) {
+                              print(onError);
+                            });
 
 
 
 
 
-                        ),
-                        SizedBox(
-                          height: 16.h,
-                        ),
 
-                         SizedBox(
-                            width: double.infinity,
-                            child: deactivatableWidget(),
+                          }
+                        }
+
+
+
+
+
+                    ),
+
+
+
+
+
+
+
+                    SizedBox(
+                      height: 16.h,
+                    ),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: deactivatableWidget(),
+                    ),
+
+                    SizedBox(height: 16.h,),
+                    Wrap(
+                      children: [
+                        Center(
+                          child: Text(
+                            "By signing up to Zinx you agree to our ",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColor.textWhite,
+                            ),
                           ),
-
-                        SizedBox(height: 16.h,),
-                        Wrap(
-                          children: [
-                            Center(
-                              child: Text(
-                                "By signing up to Zinx you agree to our ",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColor.textWhite,
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                "terms and conditions",
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColor.purpleBrush,
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
-                        Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+                        Center(
+                          child: Text(
+                            "terms and conditions",
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w700,
+                              color: AppColor.purpleBrush,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  )
-              ),
+                    Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom))
+                  ],
+                ),
+              )
+          ),
 
-            );
-          },
+        );
+      },
 
 
 
@@ -235,44 +236,45 @@ class _SignupPageState extends State<SignupPage> {
     print('Hello Reactive Forms!!!');
   }
 
- Widget deactivatableWidget(){
-   var connectionStatus = Provider.of<ConnectivityStatus>(context);
-   if( connectionStatus != ConnectivityStatus.offline  && _isEnabled==true && _isValid==true){
-return TextButton(
-  onPressed:_onPressed,
-  style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
-      foregroundColor: MaterialStateProperty.all(Colors.white),
-      padding: MaterialStateProperty.all(
-          EdgeInsets.symmetric(vertical: 14.h)),
-      textStyle: MaterialStateProperty.all(TextStyle(
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w700,
-      ))),
-  child: Text("Create Account"),
-);
 
-   }
-  return  Opacity(
-    opacity: 0.2,
-    child: TextButton(
-       onPressed:(){
+  Widget deactivatableWidget(SignupViewModel model){
+    var connectionStatus = Provider.of<ConnectivityStatus>(context);
+    if( connectionStatus != ConnectivityStatus.offline  && _isEnabled==true && _isValid==true){
+      return TextButton(
+        onPressed:_onPressed,
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+            padding: MaterialStateProperty.all(
+                EdgeInsets.symmetric(vertical: 14.h)),
+            textStyle: MaterialStateProperty.all(TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+            ))),
+        child: Text("Create Account"),
+      );
 
-       },
-       style: ButtonStyle(
-           backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
-           foregroundColor: MaterialStateProperty.all(Colors.white),
-           padding: MaterialStateProperty.all(
-               EdgeInsets.symmetric(vertical: 14.h)),
-           textStyle: MaterialStateProperty.all(TextStyle(
-             fontSize: 14.sp,
-             fontWeight: FontWeight.w700,
-           ))),
-       child: Text("Create Account"),
-     ),
-  );
+    }
+    return  Opacity(
+      opacity: 0.2,
+      child: TextButton(
+        onPressed:(){
 
- }
+        },
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
+            foregroundColor: MaterialStateProperty.all(Colors.white),
+            padding: MaterialStateProperty.all(
+                EdgeInsets.symmetric(vertical: 14.h)),
+            textStyle: MaterialStateProperty.all(TextStyle(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w700,
+            ))),
+        child: Text("Create Account"),
+      ),
+    );
+
+  }
 
 }
 
