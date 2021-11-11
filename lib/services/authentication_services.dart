@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
@@ -65,6 +66,13 @@ return e;
 
   }
 
+  Future<bool> sendOtp(String email) async{
+EmailAuth.sessionName="Zinx session";
+var result = await EmailAuth.sendOtp(receiverMail: email);
+return result;
+
+  }
+
 
   Future<bool> checkIfEmailInUse(String emailAddress) async {
     try {
@@ -77,7 +85,7 @@ return e;
         // user using the email address
         return true;
       } else {
-        // Return false because email adress is not in use
+        // Return false because email address is not in use
         return false;
       }
     } catch (e) {

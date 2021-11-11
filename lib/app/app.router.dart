@@ -8,16 +8,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-import 'package:zinx/ui/views/main_screens/user_main_screen.dart';
 
 import '../ui/views/Loading_screen.dart';
 import '../ui/views/create_account_view.dart';
 import '../ui/views/create_profile.dart';
 import '../ui/views/login_view.dart';
+import '../ui/views/main_screens/user_main_screen.dart';
 import '../ui/views/set_password.dart';
 import '../ui/views/signup_page.dart';
 import '../ui/views/startup_view.dart';
-
 import '../ui/views/verify_email.dart';
 
 class Routes {

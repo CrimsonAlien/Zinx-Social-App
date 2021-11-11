@@ -80,7 +80,7 @@ class _SignupPageState extends State<SignupPage> {
                     AsyncTextFormField(
 
                         key: _usernameFormKey,
-                        maxLength: 90,
+                        maxLength: 50,
                         controller: _userName,
                         validationDebounce: Duration(milliseconds: 500),
                         decoration: InputDecoration(
@@ -88,29 +88,7 @@ class _SignupPageState extends State<SignupPage> {
                           hintText: 'Name',
 
                         ),
-                        validator: (String? value) async {
-
-                          if(value==null||value.isEmpty){
-
-                            model.setState(ViewState.idle);
-                            _isEnabled=false;
-                            return null;
-                          }
-                          if(value.trim().length>4){
-                            model.setState(ViewState.idle);
-                            _isEnabled=false;
-                            return 'must have 50 characters or less';
-                          }
-                          else{
-
-                            model.setState(ViewState.busy);
-                            _isEnabled=true;
-
-                          }
-
-
-
-                        }
+                        validator: model.usernameValidator,
 
 
 
@@ -128,50 +106,9 @@ class _SignupPageState extends State<SignupPage> {
                           hintStyle: TextStyle(color: AppColor.textWhite),
                           hintText: 'Email',
 
+
                         ),
-                        validator: (String? value) async {
-
-                          if(value==null||value.isEmpty){
-                            model.setState(ViewState.idle);
-                          _isValid=false;
-
-
-                          }
-                          if(!EmailValidator.validate(_email.text)){
-
-                            model.setState(ViewState.idle);
-                            _isValid=false;
-                            return 'Enter a valid email';
-                          }
-                          if(connectionStatus==ConnectivityStatus.offline){
-                            model.setState(ViewState.idle);
-                            _isValid=false;
-                            return 'Please check internet connection';
-                          }else{
-                            Future.delayed(Duration.zero);
-
-                            return model.checkEmail(email: _email.text).then((onValue) {
-                              if(onValue!=null && onValue.isNotEmpty){
-                                model.setState(ViewState.idle);
-                                _isValid=false;
-                                return "email is already in use";
-                              }else{
-                                model.setState(ViewState.busy);
-                                _isValid=true;
-                              }
-                            }).catchError((onError) {
-                              print(onError);
-                            });
-
-
-
-
-
-
-                          }
-                        }
-
-
+                        validator:model.checkEmail,
 
 
 
@@ -189,7 +126,7 @@ class _SignupPageState extends State<SignupPage> {
 
                     SizedBox(
                       width: double.infinity,
-                      child: deactivatableWidget(),
+                      child: deactivatableWidget(model),
                     ),
 
                     SizedBox(height: 16.h,),
@@ -239,9 +176,9 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget deactivatableWidget(SignupViewModel model){
     var connectionStatus = Provider.of<ConnectivityStatus>(context);
-    if( connectionStatus != ConnectivityStatus.offline  && _isEnabled==true && _isValid==true){
+    if( connectionStatus == ConnectivityStatus.Cellular){
       return TextButton(
-        onPressed:_onPressed,
+        onPressed:() =>model.sendOtp(_email.text),
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
             foregroundColor: MaterialStateProperty.all(Colors.white),

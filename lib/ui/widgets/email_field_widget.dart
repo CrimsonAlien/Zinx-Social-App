@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:zinx/enums/connectivity_status.dart';
 import 'package:zinx/ui/shared/app_colors.dart';
 
 class AsyncTextFormField extends StatefulWidget {
-  final Future<String?> Function(String?)? validator;
+  final Future<String?> Function(String)? validator;
   final Duration? validationDebounce;
   final TextEditingController? controller;
 
@@ -128,6 +131,8 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+
+    var connectionStatus = Provider.of<ConnectivityStatus>(context);
     final decoration = widget.decoration?.copyWith(
 
         suffix: SizedBox(height: 20, width: 20, child: _getSuffixIcon())) ??
@@ -149,6 +154,40 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
           cancelTimer();
           return;
         }
+        if(!EmailValidator.validate(text)){
+          final msg = 'email invalid';
+          setState(() {
+
+            isValidating = false;
+            isValid=false;
+            validationMessage = msg;
+          });
+          widget.onChanged?.call(text);
+          cancelTimer();
+          return;
+        }
+        else{
+          setState(() {
+
+            isValidating = false;
+            isValid=false;
+            validationMessage=null;
+
+          });
+        }
+        if(connectionStatus==ConnectivityStatus.offline){
+          final msg = 'no internet connection';
+          setState(() {
+
+            isValidating = false;
+            isValid=false;
+            validationMessage = msg;
+          });
+          widget.onChanged?.call(text);
+          cancelTimer();
+          return;
+        }
+
         if (text == originalValue) {
           // edited text is same as the original one, the value is valid, no need to validate it
           setState(() {
@@ -246,7 +285,7 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
       if (!isValid && isDirty) {
 
 
-          return Container();
+        return Container();
 
 
       } else if (isValid) {

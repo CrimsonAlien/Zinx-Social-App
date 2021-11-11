@@ -2,6 +2,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:stacked_services/stacked_services.dart';
 import 'package:zinx/services/authentication_services.dart';
+import 'package:zinx/services/connectivity_service.dart';
 import 'package:zinx/services/firestore_service.dart';
 
 @module
@@ -20,4 +21,10 @@ abstract class ThirdPartyServicesModule {
 
   @lazySingleton
   FirestoreService get firestoreService;
+
+  @lazySingleton
+  ConnectivityService get connectivityService;
+
+
+
 }
