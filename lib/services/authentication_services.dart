@@ -73,7 +73,12 @@ return result;
 
   }
 
+  Future<bool> VerifyOtp(String email,String userOtp) async{
+    EmailAuth.sessionName="Zinx session";
+    var result = await EmailAuth.validate(receiverMail: email, userOTP: userOtp);
+    return result;
 
+  }
   Future<bool> checkIfEmailInUse(String emailAddress) async {
     try {
       // Fetch sign-in methods for the email address

@@ -12,7 +12,6 @@ import 'package:zinx/enums/connectivity_status.dart';
 import 'package:zinx/enums/view_state.dart';
 
 import 'package:zinx/ui/shared/app_colors.dart';
-import 'package:zinx/ui/widgets/deactivatable_button.dart';
 
 import 'package:zinx/ui/widgets/email_field_widget.dart';
 import 'package:zinx/ui/widgets/network_sensitive.dart';
@@ -77,21 +76,31 @@ class _SignupPageState extends State<SignupPage> {
                     SizedBox(
                       height: 24.h,
                     ),
-                    AsyncTextFormField(
+                    GeneralAsyncTextFormField(
 
-                        key: _usernameFormKey,
-                        maxLength: 50,
-                        controller: _userName,
-                        validationDebounce: Duration(milliseconds: 500),
-                        decoration: InputDecoration(
-                          hintStyle: TextStyle(color: AppColor.textWhite),
-                          hintText: 'Name',
+                      key: _usernameFormKey,
+                      maxLength: 50,
+                      controller: _userName,
+                      validationDebounce: Duration(milliseconds: 500),
+                      decoration: InputDecoration(
+                        hintStyle: TextStyle(color: AppColor.textWhite),
+                        hintText: 'Name',
 
-                        ),
-                        validator: model.usernameValidator,
+                      ),
+                      validator:(value)=>model.usernameValidator(_userName.text).then((onValue) {
+                        if(onValue!=null && onValue.isNotEmpty){
+model.setState(ViewState.isEnabled);
+                          _isValid=true;
 
+                        }else{
 
+                          model.setState(ViewState.idle);
 
+                          _isValid=false;
+                        }
+                      }).catchError((onError) {
+                        print(onError);
+                      }),
                     ),
                     SizedBox(
                       height: 16.h,
@@ -108,8 +117,16 @@ class _SignupPageState extends State<SignupPage> {
 
 
                         ),
-                        validator:model.checkEmail,
-
+                        validator:(value)=>model.checkEmail(_email.text).whenComplete(() {
+                      if(model.state==ViewState.isEnabled){
+                       _isEnabled=true;
+                      }
+                      else{
+                        _isEnabled=false;
+                      }
+                        }).catchError((onError) {
+                          print(onError);
+                        }),
 
 
                     ),
@@ -174,24 +191,29 @@ class _SignupPageState extends State<SignupPage> {
   }
 
 
+
   Widget deactivatableWidget(SignupViewModel model){
     var connectionStatus = Provider.of<ConnectivityStatus>(context);
-    if( connectionStatus == ConnectivityStatus.Cellular){
-      return TextButton(
-        onPressed:() =>model.sendOtp(_email.text),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
-            foregroundColor: MaterialStateProperty.all(Colors.white),
-            padding: MaterialStateProperty.all(
-                EdgeInsets.symmetric(vertical: 14.h)),
-            textStyle: MaterialStateProperty.all(TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w700,
-            ))),
-        child: Text("Create Account"),
-      );
 
-    }
+
+    if( _isValid==true && _isEnabled==true && connectionStatus!= ConnectivityStatus.offline){
+        return TextButton(
+          onPressed:() async => await model.finalizeCheck(_email.text),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(AppColor.purpleBrush),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+              padding: MaterialStateProperty.all(
+                  EdgeInsets.symmetric(vertical: 14.h)),
+              textStyle: MaterialStateProperty.all(TextStyle(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w700,
+              ))),
+          child: Text("Create Account"),
+        );
+      }
+
+
+
     return  Opacity(
       opacity: 0.2,
       child: TextButton(

@@ -17,6 +17,8 @@ connectionStatusController.add(connectionStatus);
  }
 
  ConnectivityStatus _getStatusFromResult(ConnectivityResult result){
+
+   
    switch(result){
      case ConnectivityResult.mobile:
        return ConnectivityStatus.Cellular;
@@ -32,4 +34,20 @@ connectionStatusController.add(connectionStatus);
 
  }
 
+
+  getConnectionStatusFromResult(ConnectivityResult result) async{
+    switch(result){
+      case ConnectivityResult.mobile:
+        return ConnectivityStatus.Cellular;
+      case ConnectivityResult.wifi:
+        return ConnectivityStatus.Cellular;
+      case ConnectivityResult.none :
+        return ConnectivityStatus.offline;
+
+      default:
+        return ConnectivityStatus.offline;
+    }
+
+
+  }
 }

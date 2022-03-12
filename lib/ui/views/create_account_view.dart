@@ -17,6 +17,14 @@ import 'package:zinx/ui/widgets/email_field_widget.dart';
 import 'package:zinx/viewmodels/create_account_model.dart';
 
 class CreateAccount extends StatefulWidget {
+  final String email;
+
+  CreateAccount(this.email, this.username);
+
+  final String username;
+
+
+
   @override
   _CreateAccountState createState() => _CreateAccountState();
 }
@@ -119,7 +127,7 @@ class _CreateAccountState extends State<CreateAccount> {
 
                                   if (form.validate()) {
 
-model.signUpA(email: _emailController.text, password: _passwordController.text , photoUrl: 'sed', username: 'jude', displayName: 'crimson', bio: 'God is good');
+model.signUpA(email: widget.email, password: _passwordController.text , photoUrl: 'sed', username: widget.username, displayName: 'crimson', bio: ' ');
                                   }
 
 

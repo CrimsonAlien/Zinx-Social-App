@@ -39,6 +39,7 @@ class MyApp extends StatelessWidget {
           ),
 navigatorKey: StackedService.navigatorKey,
           onGenerateRoute: StackedRouter().onGenerateRoute,
+          navigatorObservers: [StackedService.routeObserver],
         ),
  designSize: const Size(360, 640),
       ),

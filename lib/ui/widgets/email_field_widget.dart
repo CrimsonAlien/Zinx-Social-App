@@ -4,8 +4,11 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:stacked/stacked.dart';
 import 'package:zinx/enums/connectivity_status.dart';
+import 'package:zinx/enums/view_state.dart';
 import 'package:zinx/ui/shared/app_colors.dart';
+import 'package:zinx/viewmodels/base_model.dart';
 
 class AsyncTextFormField extends StatefulWidget {
   final Future<String?> Function(String)? validator;
@@ -131,6 +134,8 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
 
   @override
   Widget build(BuildContext context) {
+  return ViewModelBuilder<BaseModel>.reactive(
+  builder: (context, model, child) {
 
     var connectionStatus = Provider.of<ConnectivityStatus>(context);
     final decoration = widget.decoration?.copyWith(
@@ -141,6 +146,7 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
       validator: (value) => validationMessage,
 
       onChanged: (text) async {
+        model.setState(ViewState.idle);
         setState(() => isDirty = true);
         if (text.isEmpty) {
           final msg = await widget.validator?.call(text);
@@ -154,14 +160,38 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
           cancelTimer();
           return;
         }
+
         if(!EmailValidator.validate(text)){
-          final msg = 'email invalid';
+          final msg = await widget.validator?.call(text);
+          setState(() {
+            isValidating = false;
+            isValid=false;
+            validationMessage = msg;
+          });
+          widget.onChanged?.call(text);
+          cancelTimer();
+          return;
+
+
+        }else{
+          setState(() {
+
+            isValidating = false;
+            isValid=false;
+            validationMessage=null;
+
+          });
+        }
+        if(connectionStatus==ConnectivityStatus.offline){
+          final msg = 'no internet connection';
+print("yo");
           setState(() {
 
             isValidating = false;
             isValid=false;
             validationMessage = msg;
           });
+          model.setState(ViewState.idle);
           widget.onChanged?.call(text);
           cancelTimer();
           return;
@@ -175,19 +205,6 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
 
           });
         }
-        if(connectionStatus==ConnectivityStatus.offline){
-          final msg = 'no internet connection';
-          setState(() {
-
-            isValidating = false;
-            isValid=false;
-            validationMessage = msg;
-          });
-          widget.onChanged?.call(text);
-          cancelTimer();
-          return;
-        }
-
         if (text == originalValue) {
           // edited text is same as the original one, the value is valid, no need to validate it
           setState(() {
@@ -261,6 +278,12 @@ class _AsyncTextFormFieldState extends State<AsyncTextFormField> {
       cursorWidth: widget.cursorWidth,
       enableInteractiveSelection: widget.enableInteractiveSelection,
     );
+  },
+
+
+
+  viewModelBuilder: () => BaseModel(),
+  );
   }
 
   @override

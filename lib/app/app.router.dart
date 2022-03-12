@@ -90,8 +90,9 @@ class StackedRouter extends RouterBase {
       );
     },
     VerifyEmail: (data) {
+      var args = data.getArgs<VerifyEmailArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => VerifyEmail(),
+        builder: (context) => VerifyEmail(email: args.email),
         settings: data,
       );
     },
@@ -114,4 +115,14 @@ class StackedRouter extends RouterBase {
       );
     },
   };
+}
+
+/// ************************************************************************
+/// Arguments holder classes
+/// *************************************************************************
+
+/// VerifyEmail arguments holder class
+class VerifyEmailArguments {
+  final String email;
+  VerifyEmailArguments({required this.email});
 }
